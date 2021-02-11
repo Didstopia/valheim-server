@@ -15,7 +15,7 @@ RUN apt-get update && \
 
 # Create the volume directories
 WORKDIR /
-RUN mkdir -p /steamcmd/valheim /app/.local/share/Valheim
+RUN mkdir -p /steamcmd/valheim /app/.config/unity3d/IronGate/Valheim
 
 # Add the steamcmd installation script
 ADD install.txt /app/install.txt
@@ -50,7 +50,7 @@ ENV VALHEIM_UPDATE_CHECKING "0"
 ENV CHOWN_DIRS "/app,/steamcmd"
 
 # Expose the volumes
-VOLUME [ "/steamcmd/valheim", "/app/.local/share/Valheim" ]
+VOLUME [ "/steamcmd/valheim", "/app/.config/unity3d/IronGate/Valheim" ]
 
 # Start the server
 CMD [ "bash", "/app/start.sh" ]

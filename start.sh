@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Enable debugging
-#set -x
+set -x
 
 # Print the user we're currently running as
 echo "Running as user: $(whoami)"
@@ -27,7 +27,7 @@ exit_handler()
 trap 'exit_handler' SIGINT SIGTERM
 
 # Valheim includes a 64-bit version of steamclient.so, so we need to tell the OS where it exists
-# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/steamcmd/valheim/7DaysToDieServer_Data/Plugins/x86_64
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/steamcmd/valheim/valheim_server_Data/Plugins
 
 # Define the install/update function
 install_or_update()
@@ -64,7 +64,7 @@ curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | bsdtar -
 # Disable auto-update if start mode is 2
 if [ "$VALHEIM_START_MODE" = "2" ]; then
 	# Check that Valheim exists in the first place
-	if [ ! -f "/steamcmd/valheim/valheimServer" ]; then
+	if [ ! -f "/steamcmd/valheim/valheim_server.x86_64" ]; then
 		install_or_update
 	else
 		echo "Valheim seems to be installed, skipping automatic update.."
@@ -90,21 +90,11 @@ if [ "$VALHEIM_START_MODE" = "1" ]; then
 	exit
 fi
 
-# Start cron
-echo "Starting scheduled task manager.."
-node /app/scheduler_app/app.js &
-
 # Set the working directory
 cd /steamcmd/valheim
 
-# Validate that the default server configuration file exists
-if [ ! -f "/steamcmd/valheim/serverconfig.xml" ]; then
-	echo "ERROR: Default server configuration file not found, are you sure the server is up to date?"
-	exit 1
-fi
-
 # Run the server
-/steamcmd/valheim/valheimServer ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -name "${VALHEIM_SERVER_NAME}" -world "${VALHEIM_SERVER_NAME}" -password "${VALHEIM_SERVER_PASSWORD}" &
+/steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -name "${VALHEIM_SERVER_NAME}" -world "${VALHEIM_SERVER_NAME}" -password "${VALHEIM_SERVER_PASSWORD}" &
 
 child=$!
 wait "$child"

@@ -41,6 +41,7 @@ EXPOSE 2457/udp
 # Setup default environment variables for the server
 ENV VALHEIM_SERVER_STARTUP_ARGUMENTS "-quit -batchmode -nographics -dedicated -public 1"
 ENV VALHEIM_SERVER_NAME "Docker"
+ENV VALHEIM_SERVER_WORLD_NAME "docker"
 ENV VALHEIM_SERVER_PASSWORD "docker"
 ENV VALHEIM_BRANCH "public"
 ENV VALHEIM_START_MODE "0"

@@ -94,7 +94,7 @@ fi
 cd /steamcmd/valheim
 
 # Run the server
-/steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -name "${VALHEIM_SERVER_NAME}" -world "${VALHEIM_SERVER_NAME}" -password "${VALHEIM_SERVER_PASSWORD}" &
+/steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -name "${VALHEIM_SERVER_NAME}" -world "${VALHEIM_SERVER_WORLD_NAME}" -password "${VALHEIM_SERVER_PASSWORD}" &
 
 child=$!
 wait "$child"

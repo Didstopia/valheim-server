@@ -27,7 +27,7 @@ exit_handler()
 trap 'exit_handler' SIGINT SIGTERM
 
 # Valheim includes a 64-bit version of steamclient.so, so we need to tell the OS where it exists
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/steamcmd/valheim/valheim_server_Data/Plugins
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/steamcmd/valheim/linux64
 
 # Define the install/update function
 install_or_update()

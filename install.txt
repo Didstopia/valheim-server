@@ -1,0 +1,5 @@
+@sSteamCmdForcePlatformType linux
+login anonymous
+force_install_dir /steamcmd/valheim
+app_update 896660 validate
+quit

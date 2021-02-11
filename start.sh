@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Enable debugging
-set -x
+# set -x
 
 # Print the user we're currently running as
 echo "Running as user: $(whoami)"
@@ -28,6 +28,9 @@ trap 'exit_handler' SIGINT SIGTERM
 
 # Valheim includes a 64-bit version of steamclient.so, so we need to tell the OS where it exists
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/steamcmd/valheim/linux64
+
+# Fix missing Steam app id env var
+export SteamAppId=892970
 
 # Define the install/update function
 install_or_update()
@@ -94,7 +97,7 @@ fi
 cd /steamcmd/valheim
 
 # Run the server
-/steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -name "${VALHEIM_SERVER_NAME}" -world "${VALHEIM_SERVER_WORLD_NAME}" -password "${VALHEIM_SERVER_PASSWORD}" &
+/steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -name "${VALHEIM_SERVER_NAME}" -world "${VALHEIM_SERVER_WORLD}" -password "${VALHEIM_SERVER_PASSWORD}" &
 
 child=$!
 wait "$child"

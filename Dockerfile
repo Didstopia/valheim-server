@@ -22,6 +22,8 @@ ADD install.txt /app/install.txt
 
 # Copy scripts
 ADD start.sh /app/start.sh
+ADD update_check.sh /app/update_check.sh
+RUN chmod +x /app/*.sh
 
 # Fix permissions
 RUN chown -R 1000:1000 \
@@ -41,8 +43,8 @@ EXPOSE 2457/udp
 # Setup default environment variables for the server
 ENV VALHEIM_SERVER_STARTUP_ARGUMENTS "-quit -batchmode -nographics -dedicated -public 1"
 ENV VALHEIM_SERVER_NAME "Docker"
-ENV VALHEIM_SERVER_WORLD_NAME "docker"
-ENV VALHEIM_SERVER_PASSWORD "secret"
+ENV VALHEIM_SERVER_WORLD "Dedicated"
+ENV VALHEIM_SERVER_PASSWORD "docker"
 ENV VALHEIM_BRANCH "public"
 ENV VALHEIM_START_MODE "0"
 ENV VALHEIM_UPDATE_CHECKING "0"

@@ -6,16 +6,17 @@ LABEL maintainer="Didstopia <support@didstopia.com>"
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies
-RUN apt-get update && \
-	apt-get install -y --no-install-recommends \
-    libsdl2-dev && \
-    rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && \
+# 	apt-get install -y --no-install-recommends \
+#     libsdl2-dev && \
+#     rm -rf /var/lib/apt/lists/*
 
 # Set the default working directory
 WORKDIR /
 
 # Create the volume directories
-RUN mkdir -p /steamcmd/valheim /app/.config/unity3d/IronGate/Valheim
+#RUN mkdir -p /steamcmd/valheim /app/.config/unity3d/IronGate/Valheim
+RUN /app/.config/unity3d/IronGate/Valheim
 
 # Setup scheduling support
 ADD scheduler_app/ /app/scheduler_app/

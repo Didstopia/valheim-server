@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+  valheim-server:
+    image: didstopia/valheim-server
+    environment:
+      VALHEIM_SERVER_NAME: "Dids's Docker Test Server"
+      VALHEIM_SERVER_WORLD: "Dids's Docker World"
+      VALHEIM_SERVER_PASSWORD: "my password"
+      VALHEIM_SERVER_ADMINS: "1234567890"
+      VALHEIM_START_MODE: 0
+      VALHEIM_UPDATE_CHECKING: 1
+    ports:
+      - 2456:2456/tcp
+      - 2456:2456/udp
+      - 2457:2457/udp
+      - 2457:2457/tcp
+      - 2458:2458/udp
+      - 2458:2458/tcp
+    volumes:
+      - ${PWD}/valheim_data/saves:/app/.config/unity3d/IronGate/Valheim
+      - ${PWD}/valheim_data/data:/steamcmd/valheim

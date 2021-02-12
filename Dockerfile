@@ -8,14 +8,19 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Install dependencies
 RUN apt-get update && \
 	apt-get install -y --no-install-recommends \
-    xvfb \
-    telnet \
-    expect && \
+    libsdl2-dev && \
     rm -rf /var/lib/apt/lists/*
 
-# Create the volume directories
+# Set the default working directory
 WORKDIR /
+
+# Create the volume directories
 RUN mkdir -p /steamcmd/valheim /app/.config/unity3d/IronGate/Valheim
+
+# Setup scheduling support
+ADD scheduler_app/ /app/scheduler_app/
+WORKDIR /app/scheduler_app
+RUN npm install
 
 # Add the steamcmd installation script
 ADD install.txt /app/install.txt
@@ -39,12 +44,17 @@ EXPOSE 2456/tcp
 EXPOSE 2456/udp
 EXPOSE 2457/udp
 EXPOSE 2457/udp
+EXPOSE 2458/udp
+EXPOSE 2458/udp
 
 # Setup default environment variables for the server
 ENV VALHEIM_SERVER_STARTUP_ARGUMENTS "-quit -batchmode -nographics -dedicated -public 1"
 ENV VALHEIM_SERVER_NAME "Docker"
 ENV VALHEIM_SERVER_WORLD "Dedicated"
-ENV VALHEIM_SERVER_PASSWORD "docker"
+ENV VALHEIM_SERVER_PORT "2456"
+ENV VALHEIM_SERVER_PUBLIC "1"
+ENV VALHEIM_SERVER_PASSWORD ""
+ENV VALHEIM_SERVER_ADMINS ""
 ENV VALHEIM_BRANCH "public"
 ENV VALHEIM_START_MODE "0"
 ENV VALHEIM_UPDATE_CHECKING "0"

@@ -12,12 +12,9 @@ exit_handler()
 {
 	echo "Shutdown signal received.."
 
-	# Execute the telnet shutdown commands
-	# /app/shutdown.sh
-	killer=$!
-	wait "$killer"
-
-	sleep 4
+  # Send SIGINT to server process and wait for it to finish
+  kill -2 $child
+  wait "$child"
 
 	echo "Exiting.."
 	exit
@@ -93,16 +90,28 @@ if [ "$VALHEIM_START_MODE" = "1" ]; then
 	exit
 fi
 
+# Start cron
+echo "Starting scheduled task manager.."
+node /app/scheduler_app/app.js &
+
 # Set the working directory
 cd /steamcmd/valheim
 
+# Escape the world name
+WORLD_ESCAPED=$(echo "${VALHEIM_SERVER_WORLD}" | tr -s -c [:alnum:] _)
+
+# Set the admin user if specified
+if [ ! -z ${VALHEIM_BRANCH+x} ]; then
+  echo "Setting server admin IDs: ${VALHEIM_SERVER_ADMINS}"
+  mkdir -p /app/.config/unity3d/IronGate/Valheim
+  touch /app/.config/unity3d/IronGate/Valheim/adminlist.txt
+  grep -qxF "${VALHEIM_SERVER_ADMINS}" /app/.config/unity3d/IronGate/Valheim/adminlist.txt || echo "${VALHEIM_SERVER_ADMINS}" > /app/.config/unity3d/IronGate/Valheim/adminlist.txt
+fi
+
 # Run the server
-/steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -name "${VALHEIM_SERVER_NAME}" -world "${VALHEIM_SERVER_WORLD}" -password "${VALHEIM_SERVER_PASSWORD}" &
-
-child=$!
+/steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -public ${VALHEIM_SERVER_PUBLIC} -port "${VALHEIM_SERVER_PORT}" -name "${VALHEIM_SERVER_NAME}" -world "${WORLD_ESCAPED}" -password "${VALHEIM_SERVER_PASSWORD}" | egrep -iv '^((\(Filename: .*\))|([[:space:]]*))$' &
+child=$(pidof -s valheim_server.x86_64)
 wait "$child"
-
-pkill -f nginx
 
 echo "Exiting.."
 exit

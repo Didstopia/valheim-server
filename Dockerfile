@@ -16,7 +16,7 @@ WORKDIR /
 
 # Create the volume directories
 #RUN mkdir -p /steamcmd/valheim /app/.config/unity3d/IronGate/Valheim
-RUN /app/.config/unity3d/IronGate/Valheim
+RUN mkdir -p /app/.config/unity3d/IronGate/Valheim
 
 # Setup scheduling support
 ADD scheduler_app/ /app/scheduler_app/

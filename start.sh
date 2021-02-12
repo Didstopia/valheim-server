@@ -110,9 +110,9 @@ fi
 
 # Run the server
 # /steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -public ${VALHEIM_SERVER_PUBLIC} -port "${VALHEIM_SERVER_PORT}" -name "${VALHEIM_SERVER_NAME}" -world "${WORLD_ESCAPED}" -password "${VALHEIM_SERVER_PASSWORD}" | egrep -iv '^((\(Filename: .*\))|([[:space:]]*))$' &
-/steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -public ${VALHEIM_SERVER_PUBLIC} -port "${VALHEIM_SERVER_PORT}" -name "${VALHEIM_SERVER_NAME}" -world "${WORLD_ESCAPED}" -password "${VALHEIM_SERVER_PASSWORD}" &
-child=$(pidof -s valheim_server.x86_64)
-wait "$child"
+/steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -public ${VALHEIM_SERVER_PUBLIC} -port "${VALHEIM_SERVER_PORT}" -name "${VALHEIM_SERVER_NAME}" -world "${WORLD_ESCAPED}" -password "${VALHEIM_SERVER_PASSWORD}"
+# child=$(pidof -s valheim_server.x86_64)
+# wait "$child"
 
 echo "Exiting.."
 exit

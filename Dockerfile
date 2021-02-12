@@ -15,8 +15,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 WORKDIR /
 
 # Create the volume directories
-#RUN mkdir -p /steamcmd/valheim /app/.config/unity3d/IronGate/Valheim
-RUN mkdir -p /app/.config/unity3d/IronGate/Valheim
+RUN mkdir -p /steamcmd/valheim /app/.config/unity3d/IronGate/Valheim
+# RUN mkdir -p /app/.config/unity3d/IronGate/Valheim
 
 # Setup scheduling support
 ADD scheduler_app/ /app/scheduler_app/
@@ -49,7 +49,7 @@ EXPOSE 2458/udp
 EXPOSE 2458/udp
 
 # Setup default environment variables for the server
-ENV VALHEIM_SERVER_STARTUP_ARGUMENTS "-quit -batchmode -nographics -dedicated -public 1"
+ENV VALHEIM_SERVER_STARTUP_ARGUMENTS "-quit -batchmode -nographics -dedicated"
 ENV VALHEIM_SERVER_NAME "Docker"
 ENV VALHEIM_SERVER_WORLD "Dedicated"
 ENV VALHEIM_SERVER_PORT "2456"

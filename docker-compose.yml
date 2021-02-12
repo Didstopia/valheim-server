@@ -7,7 +7,6 @@ services:
       VALHEIM_SERVER_WORLD: "Dids's Docker World"
       VALHEIM_SERVER_PASSWORD: "my password"
       VALHEIM_SERVER_ADMINS: "1234567890"
-      VALHEIM_START_MODE: 0
       VALHEIM_UPDATE_CHECKING: 1
     ports:
       - 2456:2456/tcp

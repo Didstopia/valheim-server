@@ -29,6 +29,9 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/steamcmd/valheim/linux64
 # Fix missing Steam app id env var
 export SteamAppId=892970
 
+# Export the config dir
+export VALHEIM_CONFIG_DIR="/app/.config/unity3d/IronGate/Valheim"
+
 # Define the install/update function
 install_or_update()
 {
@@ -97,20 +100,33 @@ node /app/scheduler_app/app.js &
 # Set the working directory
 cd /steamcmd/valheim
 
-# Escape the world name
-WORLD_ESCAPED=$(echo "${VALHEIM_SERVER_WORLD}" | tr -s -c [:alnum:] _)
+# Sanitize the world name
+VALHEIM_SERVER_WORLD_SANITIZED=$(echo -n "${VALHEIM_SERVER_WORLD}" | tr -s -c [:alnum:] _)
+echo "Sanitized world name: ${VALHEIM_SERVER_WORLD_SANITIZED}"
+
+# Migrate worlds if necessary (old bug with an extra _ suffix for the world names)
+LOCAL_WORLD_PATH="${VALHEIM_CONFIG_DIR}/worlds/${VALHEIM_SERVER_WORLD_SANITIZED}"
+if [[ ! -f "${LOCAL_WORLD_PATH}.db" ]]; then
+	if [[ -f "${LOCAL_WORLD_PATH}_.db" ]]; then
+		mv "${LOCAL_WORLD_PATH}_.db" "${LOCAL_WORLD_PATH}.db"
+	fi
+fi
+if [[ ! -f "${LOCAL_WORLD_PATH}.fwl" ]]; then
+	if [[ -f "${LOCAL_WORLD_PATH}_.fwl" ]]; then
+		mv "${LOCAL_WORLD_PATH}_.fwl" "${VALHEIMLOCAL_WORLD_PATH}.fwl"
+	fi
+fi
 
 # Set the admin user if specified
 if [ ! -z ${VALHEIM_BRANCH+x} ]; then
-  echo "Setting server admin IDs: ${VALHEIM_SERVER_ADMINS}"
-  mkdir -p /app/.config/unity3d/IronGate/Valheim
-  touch /app/.config/unity3d/IronGate/Valheim/adminlist.txt
-  grep -qxF "${VALHEIM_SERVER_ADMINS}" /app/.config/unity3d/IronGate/Valheim/adminlist.txt || echo "${VALHEIM_SERVER_ADMINS}" > /app/.config/unity3d/IronGate/Valheim/adminlist.txt
+  echo "Setting up server admins (one Steam ID per line): ${VALHEIM_SERVER_ADMINS}"
+  mkdir -p ${VALHEIM_CONFIG_DIR}
+  touch ${VALHEIM_CONFIG_DIR}/adminlist.txt
+  grep -qxF "${VALHEIM_SERVER_ADMINS}" ${VALHEIM_CONFIG_DIR}/adminlist.txt || echo "${VALHEIM_SERVER_ADMINS}" > ${VALHEIM_CONFIG_DIR}/adminlist.txt
 fi
 
 # Run the server
-/steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -public ${VALHEIM_SERVER_PUBLIC} -port "${VALHEIM_SERVER_PORT}" -name "${VALHEIM_SERVER_NAME}" -world "${WORLD_ESCAPED}" -password "${VALHEIM_SERVER_PASSWORD}" | egrep -iv '^((\(Filename: .*\))|([[:space:]]*))$' &
-# /steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -public ${VALHEIM_SERVER_PUBLIC} -port "${VALHEIM_SERVER_PORT}" -name "${VALHEIM_SERVER_NAME}" -world "${WORLD_ESCAPED}" -password "${VALHEIM_SERVER_PASSWORD}"
+/steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -public ${VALHEIM_SERVER_PUBLIC} -port "${VALHEIM_SERVER_PORT}" -name "${VALHEIM_SERVER_NAME}" -world "${VALHEIM_SERVER_WORLD_SANITIZED}" -password "${VALHEIM_SERVER_PASSWORD}" | egrep -iv '^((\(Filename: .*\))|([[:space:]]*))$' &
 sleep 2
 child=$(pidof -s valheim_server.x86_64)
 wait "$child"

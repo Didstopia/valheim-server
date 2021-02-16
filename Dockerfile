@@ -5,12 +5,6 @@ LABEL maintainer="Didstopia <support@didstopia.com>"
 # Fixes apt-get warnings
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies
-# RUN apt-get update && \
-# 	apt-get install -y --no-install-recommends \
-#     libsdl2-2.0-0:i386 && \
-#     rm -rf /var/lib/apt/lists/*
-
 # Set the default working directory
 WORKDIR /
 
@@ -30,21 +24,13 @@ ADD start.sh /app/start.sh
 ADD update_check.sh /app/update_check.sh
 RUN chmod +x /app/*.sh
 
-# Fix permissions
-# RUN chown -R 1000:1000 \
-#     /steamcmd \
-#     /app
-
 # Run as a non-root user by default
 ENV PGID 1000
 ENV PUID 1000
 
 # Expose necessary ports
-EXPOSE 2456/tcp
 EXPOSE 2456/udp
 EXPOSE 2457/udp
-EXPOSE 2457/udp
-EXPOSE 2458/udp
 EXPOSE 2458/udp
 
 # Setup default environment variables for the server
@@ -53,7 +39,7 @@ ENV VALHEIM_SERVER_NAME "Didstopia Docker Server"
 ENV VALHEIM_SERVER_WORLD "docker"
 ENV VALHEIM_SERVER_PORT "2456"
 ENV VALHEIM_SERVER_PUBLIC "1"
-ENV VALHEIM_SERVER_PASSWORD ""
+ENV VALHEIM_SERVER_PASSWORD "s3cr3t"
 ENV VALHEIM_SERVER_ADMINS ""
 ENV VALHEIM_BRANCH "public"
 ENV VALHEIM_START_MODE "0"

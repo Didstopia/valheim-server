@@ -47,7 +47,7 @@ install_or_update()
 }
 
 # Check which branch to use
-if [ ! -z ${VALHEIM_BRANCH+x} ]; then
+if [ ! -z "$VALHEIM_BRANCH" ]; then
 	echo "Using branch arguments: $VALHEIM_BRANCH"
 
 	# Add "-beta" if necessary
@@ -118,7 +118,7 @@ if [[ ! -f "${LOCAL_WORLD_PATH}.fwl" ]]; then
 fi
 
 # Set the admin user if specified
-if [ ! -z ${VALHEIM_BRANCH+x} ]; then
+if [ ! -z "$VALHEIM_BRANCH" ]; then
   echo "Setting up server admins (one Steam ID per line): ${VALHEIM_SERVER_ADMINS}"
   mkdir -p ${VALHEIM_CONFIG_DIR}
   touch ${VALHEIM_CONFIG_DIR}/adminlist.txt
@@ -126,7 +126,11 @@ if [ ! -z ${VALHEIM_BRANCH+x} ]; then
 fi
 
 # Run the server
-/steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -public ${VALHEIM_SERVER_PUBLIC} -port "${VALHEIM_SERVER_PORT}" -name "${VALHEIM_SERVER_NAME}" -world "${VALHEIM_SERVER_WORLD_SANITIZED}" -password "${VALHEIM_SERVER_PASSWORD}" | egrep -iv '^((\(Filename: .*\))|([[:space:]]*))$' &
+if [ ! -z "$VALHEIM_SERVER_PASSWORD" ]; then
+  /steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -public $VALHEIM_SERVER_PUBLIC -port $VALHEIM_SERVER_PORT -name "$VALHEIM_SERVER_NAME" -world "$VALHEIM_SERVER_WORLD_SANITIZED" -password "$VALHEIM_SERVER_PASSWORD" | egrep -iv '^((\(Filename: .*\))|([[:space:]]*))$' &
+else
+  /steamcmd/valheim/valheim_server.x86_64 ${VALHEIM_SERVER_STARTUP_ARGUMENTS} -public $VALHEIM_SERVER_PUBLIC -port $VALHEIM_SERVER_PORT -name "$VALHEIM_SERVER_NAME" -world "$VALHEIM_SERVER_WORLD_SANITIZED" | egrep -iv '^((\(Filename: .*\))|([[:space:]]*))$' &
+fi
 sleep 2
 child=$(pidof -s valheim_server.x86_64)
 wait "$child"
